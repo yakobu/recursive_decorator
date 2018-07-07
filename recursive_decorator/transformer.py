@@ -1,15 +1,15 @@
 """Call transformer module."""
 from codetransformer import CodeTransformer, pattern
 from codetransformer.instructions import (CALL_FUNCTION, BUILD_TUPLE, ROT_TWO,
-                                          LOAD_GLOBAL, UNPACK_SEQUENCE)
+                                          LOAD_GLOBAL, UNPACK_SEQUENCE,CALL_FUNCTION_VAR_KW)
 
 
 class RecursiveDecoratorCallTransformer(CodeTransformer):
     """Transformer class for every call in function."""
-    def __init__(self, decorator_name, decorator_params_name, decorator_params_count):
+    def __init__(self, decorator_name, decorator_args_name, decorator_kwargs_name):
         self.decorator_name = decorator_name
-        self.decorator_params_name = decorator_params_name
-        self.decorator_params_count = decorator_params_count
+        self.decorator_args_name = decorator_args_name
+        self.decorator_kwargs_name = decorator_kwargs_name
 
     RECURSIVE_DECORATOR = "recursive_decorator"
 
@@ -40,9 +40,7 @@ class RecursiveDecoratorCallTransformer(CodeTransformer):
     @pattern(CALL_FUNCTION)
     def _call_function(self, call):
         """"""
-        print("decorator_params_name:", self.decorator_params_name)
-        print("decorator_name:", self.decorator_name)
-        print("decorator_params_count:", self.decorator_params_count)
+
 
         # Make tuple of all function args
         yield BUILD_TUPLE(call.arg)
@@ -52,11 +50,11 @@ class RecursiveDecoratorCallTransformer(CodeTransformer):
         #
         yield LOAD_GLOBAL(self.RECURSIVE_DECORATOR)
         yield LOAD_GLOBAL(self.decorator_name)
-        yield LOAD_GLOBAL(self.decorator_params_name)
-        yield UNPACK_SEQUENCE(self.decorator_params_count)
-        yield BUILD_TUPLE(self.decorator_params_count)
-        yield UNPACK_SEQUENCE(self.decorator_params_count)
-        yield CALL_FUNCTION(self.decorator_params_count + 1)
+        yield LOAD_GLOBAL(self.decorator_args_name)
+        yield LOAD_GLOBAL(self.decorator_kwargs_name)
+
+
+        yield CALL_FUNCTION_VAR_KW(1)
 
         # Apply recursive_decorator(dec) on function
         yield ROT_TWO()

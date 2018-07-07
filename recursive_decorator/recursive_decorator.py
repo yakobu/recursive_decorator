@@ -35,7 +35,7 @@ def recursive_decorator(func_decorator, *func_decorator_args,
         call_transformer = \
             RecursiveDecoratorCallTransformer(func_decorator.__name__,
                                               decorator_args_name,
-                                              len(func_decorator_args))
+                                              decorator_kwargs_name)
         new_func = call_transformer(func_to_decorate)
 
         occ = func_to_decorate.__code__
