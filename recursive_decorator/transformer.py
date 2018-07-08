@@ -40,10 +40,8 @@ class RecursiveDecoratorCallTransformer(CodeTransformer):
     @pattern(CALL_FUNCTION)
     def _call_function(self, call):
         """"""
-
-
         # Make tuple of all function args
-        yield BUILD_TUPLE(call.arg)
+        yield BUILD_TUPLE(call.positional + 2 * call.keyword)
         # Switch between function and args
         yield ROT_TWO()
         # Apply recursive_decorator on dec
@@ -62,8 +60,8 @@ class RecursiveDecoratorCallTransformer(CodeTransformer):
         # Switch function and tuple of args
         yield ROT_TWO()
         # Unpack args in the same order they supplied
-        yield UNPACK_SEQUENCE(call.arg)
-        yield BUILD_TUPLE(call.arg)
-        yield UNPACK_SEQUENCE(call.arg)
+        yield UNPACK_SEQUENCE(call.positional + 2 * call.keyword)
+        yield BUILD_TUPLE(call.positional + 2 * call.keyword)
+        yield UNPACK_SEQUENCE(call.positional + 2 * call.keyword)
         # Call function
         yield call
