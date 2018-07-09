@@ -1,4 +1,4 @@
-"""unittest for recursive_decorator."""
+"""Validating recursive_decorator transform CALL_FUNCTION_VAR instructions."""
 import mock
 import pytest
 
@@ -24,100 +24,9 @@ def mock_wrapper():
     return wrapper
 
 
-def test_apply_decorator_on_sub_call(mock_decorator):
+def test_apply_decorator_on_call_function_var(mock_decorator):
     mock_decorator.side_effect = lambda func: func
-
-    def another_func():
-        another_func.has_been_called = True
-
-    @recursive_decorator(mock_decorator)
-    def func_to_decorate():
-        func_to_decorate.has_been_called = True
-        another_func()
-
-    mock_decorator.assert_called_once()
-
-    func_to_decorate()
-
-    assert mock_decorator.call_count == 2
-    assert another_func.has_been_called is True
-    assert func_to_decorate.has_been_called is True
-
-
-def test_applying_decorator_with_args_on_sub_call(mock_decorator, mock_wrapper):
-    mock_decorator.return_value = mock_wrapper
-    args = (1, 2, 'a', "b")
-
-    def another_func():
-        another_func.has_been_called = True
-
-    @recursive_decorator(mock_decorator, *args)
-    def func_to_decorate():
-        func_to_decorate.has_been_called = True
-        another_func()
-
-    mock_wrapper.assert_called_once()
-    mock_decorator.assert_called_once_with(*args)
-
-    func_to_decorate()
-
-    assert mock_decorator.call_count == 2
-    assert mock_wrapper.call_count == 2
-    assert another_func.has_been_called is True
-    assert func_to_decorate.has_been_called is True
-
-
-def test_applying_decorator_with_kwargs_on_sub_call(mock_decorator,
-                                                    mock_wrapper):
-    mock_decorator.return_value = mock_wrapper
-    kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
-
-    def another_func():
-        another_func.has_been_called = True
-
-    @recursive_decorator(mock_decorator, **kwargs)
-    def func_to_decorate():
-        func_to_decorate.has_been_called = True
-        another_func()
-
-    mock_wrapper.assert_called_once()
-    mock_decorator.assert_called_once_with(**kwargs)
-
-    func_to_decorate()
-
-    assert mock_decorator.call_count == 2
-    assert mock_wrapper.call_count == 2
-    assert another_func.has_been_called is True
-    assert func_to_decorate.has_been_called is True
-
-
-def test_applying_decorator_with_args_and_kwargs_on_sub_call(mock_decorator,
-                                                             mock_wrapper):
-    mock_decorator.return_value = mock_wrapper
-    args = (1, 2, 'a', "b")
-    kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
-
-    def another_func():
-        another_func.has_been_called = True
-
-    @recursive_decorator(mock_decorator, *args, **kwargs)
-    def func_to_decorate():
-        func_to_decorate.has_been_called = True
-        another_func()
-
-    mock_wrapper.assert_called_once()
-    mock_decorator.assert_called_once_with(*args, **kwargs)
-
-    func_to_decorate()
-
-    assert mock_decorator.call_count == 2
-    assert mock_wrapper.call_count == 2
-    assert another_func.has_been_called is True
-    assert func_to_decorate.has_been_called is True
-
-
-def test_apply_decorator_on_sub_call_with_args(mock_decorator):
-    mock_decorator.side_effect = lambda func: func
+    another_func_args = (1, 2, '3')
 
     def another_func(*args):
         another_func.args = args
@@ -125,273 +34,291 @@ def test_apply_decorator_on_sub_call_with_args(mock_decorator):
     @recursive_decorator(mock_decorator)
     def func_to_decorate():
         func_to_decorate.has_been_called = True
-        another_func(1, 2, '3')
+        another_func(*another_func_args)
 
     mock_decorator.assert_called_once()
 
     func_to_decorate()
 
     assert mock_decorator.call_count == 2
-    assert another_func.args == (1, 2, '3')
+    assert another_func.args == another_func_args
     assert func_to_decorate.has_been_called is True
 
 
-def test_applying_decorator_with_args_on_sub_call_with_args(mock_decorator,
-                                                            mock_wrapper):
-    mock_decorator.return_value = mock_wrapper
-    args = (1, 2, 'a', "b")
-
-    def another_func(*args):
-        another_func.args = args
-
-    @recursive_decorator(mock_decorator, *args)
-    def func_to_decorate():
-        func_to_decorate.has_been_called = True
-        another_func(1, 2, '3')
-
-    mock_wrapper.assert_called_once()
-    mock_decorator.assert_called_once_with(*args)
-
-    func_to_decorate()
-
-    assert mock_decorator.call_count == 2
-    assert mock_wrapper.call_count == 2
-    assert another_func.args == (1, 2, '3')
-    assert func_to_decorate.has_been_called is True
-
-
-def test_applying_decorator_with_kwargs_on_sub_call_with_args(mock_decorator,
-                                                              mock_wrapper):
-    mock_decorator.return_value = mock_wrapper
-    kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
-
-    def another_func(*args):
-        another_func.args = args
-
-    @recursive_decorator(mock_decorator, **kwargs)
-    def func_to_decorate():
-        func_to_decorate.has_been_called = True
-        another_func(1, 2, '3')
-
-    mock_wrapper.assert_called_once()
-    mock_decorator.assert_called_once_with(**kwargs)
-
-    func_to_decorate()
-
-    assert mock_decorator.call_count == 2
-    assert mock_wrapper.call_count == 2
-    assert another_func.args == (1, 2, '3')
-    assert func_to_decorate.has_been_called is True
-
-
-def test_applying_decorator_with_args_and_kwargs_on_sub_call_with_args(
-        mock_decorator, mock_wrapper):
-    mock_decorator.return_value = mock_wrapper
-    args = (1, 2, 'a', "b")
-    kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
-
-    def another_func(*args):
-        another_func.args = args
-
-    @recursive_decorator(mock_decorator, *args, **kwargs)
-    def func_to_decorate():
-        func_to_decorate.has_been_called = True
-        another_func(1, 2, '3')
-
-    mock_wrapper.assert_called_once()
-    mock_decorator.assert_called_once_with(*args, **kwargs)
-
-    func_to_decorate()
-
-    assert mock_decorator.call_count == 2
-    assert mock_wrapper.call_count == 2
-    assert another_func.args == (1, 2, '3')
-    assert func_to_decorate.has_been_called is True
-
-
-def test_apply_decorator_on_sub_call_with_kwargs(mock_decorator):
-    mock_decorator.side_effect = lambda func: func
-
-    def another_func(**kwargs):
-        another_func.kwargs = kwargs
-
-    @recursive_decorator(mock_decorator)
-    def func_to_decorate():
-        func_to_decorate.has_been_called = True
-        another_func(a=1, b=2, c='3')
-
-    mock_decorator.assert_called_once()
-
-    func_to_decorate()
-
-    assert mock_decorator.call_count == 2
-    assert another_func.kwargs == {'a': 1, 'b': 2, 'c': '3'}
-    assert func_to_decorate.has_been_called is True
-
-
-def test_applying_decorator_with_args_on_sub_call_with_kwargs(mock_decorator,
-                                                              mock_wrapper):
-    mock_decorator.return_value = mock_wrapper
-    args = (1, 2, 'a', "b")
-
-    def another_func(**kwargs):
-        another_func.kwargs = kwargs
-
-    @recursive_decorator(mock_decorator, *args)
-    def func_to_decorate():
-        func_to_decorate.has_been_called = True
-        another_func(a=1, b=2, c='3')
-
-    mock_wrapper.assert_called_once()
-    mock_decorator.assert_called_once_with(*args)
-
-    func_to_decorate()
-
-    assert mock_decorator.call_count == 2
-    assert mock_wrapper.call_count == 2
-    assert another_func.kwargs == {'a': 1, 'b': 2, 'c': '3'}
-    assert func_to_decorate.has_been_called is True
-
-
-def test_applying_decorator_with_kwargs_on_sub_call_with_kwargs(mock_decorator,
-                                                                mock_wrapper):
-    mock_decorator.return_value = mock_wrapper
-    kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
-
-    def another_func(**kwargs):
-        another_func.kwargs = kwargs
-
-    @recursive_decorator(mock_decorator, **kwargs)
-    def func_to_decorate():
-        func_to_decorate.has_been_called = True
-        another_func(a=1, b=2, c='3')
-
-    mock_wrapper.assert_called_once()
-    mock_decorator.assert_called_once_with(**kwargs)
-
-    func_to_decorate()
-
-    assert mock_decorator.call_count == 2
-    assert mock_wrapper.call_count == 2
-    assert another_func.kwargs == {'a': 1, 'b': 2, 'c': '3'}
-    assert func_to_decorate.has_been_called is True
-
-
-def test_applying_decorator_with_args_and_kwargs_on_sub_call_with_kwargs(
-        mock_decorator, mock_wrapper):
-    mock_decorator.return_value = mock_wrapper
-    args = (1, 2, 'a', "b")
-    kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
-
-    def another_func(**kwargs):
-        another_func.kwargs = kwargs
-
-    @recursive_decorator(mock_decorator, *args, **kwargs)
-    def func_to_decorate():
-        func_to_decorate.has_been_called = True
-        another_func(a=1, b=2, c='3')
-
-    mock_wrapper.assert_called_once()
-    mock_decorator.assert_called_once_with(*args, **kwargs)
-
-    func_to_decorate()
-
-    assert mock_decorator.call_count == 2
-    assert mock_wrapper.call_count == 2
-    assert another_func.kwargs == {'a': 1, 'b': 2, 'c': '3'}
-    assert func_to_decorate.has_been_called is True
-
-
-def test_apply_decorator_on_sub_call_with_args_and_kwargs(mock_decorator):
-    mock_decorator.side_effect = lambda func: func
-
-    def another_func(*args, **kwargs):
-        another_func.args = args
-        another_func.kwargs = kwargs
-
-    @recursive_decorator(mock_decorator)
-    def func_to_decorate():
-        func_to_decorate.has_been_called = True
-        another_func(1, 2, '3', a=1, b=2, c='3')
-
-    mock_decorator.assert_called_once()
-
-    func_to_decorate()
-
-    assert mock_decorator.call_count == 2
-    assert another_func.args == (1, 2, '3')
-    assert another_func.kwargs == {'a': 1, 'b': 2, 'c': '3'}
-    assert func_to_decorate.has_been_called is True
-
-
-def test_applying_decorator_with_args_on_sub_call_with_args_and_kwargs(
+def test_applying_decorator_with_args_on_call_function_var(
         mock_decorator,
         mock_wrapper):
     mock_decorator.return_value = mock_wrapper
-    args = (1, 2, 'a', "b")
+    decorator_args = (1, 2, 'a', "b")
+    another_func_args = (1, 2, '3')
 
-    def another_func(*args, **kwargs):
+    def another_func(*args):
         another_func.args = args
-        another_func.kwargs = kwargs
 
-    @recursive_decorator(mock_decorator, *args)
+    @recursive_decorator(mock_decorator, *decorator_args)
     def func_to_decorate():
         func_to_decorate.has_been_called = True
-        another_func(1, 2, '3', a=1, b=2, c='3')
+        another_func(*another_func_args)
 
     mock_wrapper.assert_called_once()
-    mock_decorator.assert_called_once_with(*args)
+    mock_decorator.assert_called_once_with(*decorator_args)
 
     func_to_decorate()
 
     assert mock_decorator.call_count == 2
     assert mock_wrapper.call_count == 2
-    assert another_func.args == (1, 2, '3')
-    assert another_func.kwargs == {'a': 1, 'b': 2, 'c': '3'}
+    assert another_func.args == another_func_args
     assert func_to_decorate.has_been_called is True
 
 
-def test_applying_decorator_with_kwargs_on_sub_call_with_args_and_kwargs(
+def test_applying_decorator_with_kwargs_on_call_function_var(
         mock_decorator,
         mock_wrapper):
     mock_decorator.return_value = mock_wrapper
-    kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
+    decorator_kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
+    another_func_args = (1, 2, '3')
 
-    def another_func(*args, **kwargs):
+    def another_func(*args):
         another_func.args = args
-        another_func.kwargs = kwargs
 
-    @recursive_decorator(mock_decorator, **kwargs)
+    @recursive_decorator(mock_decorator, **decorator_kwargs)
     def func_to_decorate():
         func_to_decorate.has_been_called = True
-        another_func(1, 2, '3', a=1, b=2, c='3')
+        another_func(*another_func_args)
 
     mock_wrapper.assert_called_once()
-    mock_decorator.assert_called_once_with(**kwargs)
+    mock_decorator.assert_called_once_with(**decorator_kwargs)
 
     func_to_decorate()
 
     assert mock_decorator.call_count == 2
     assert mock_wrapper.call_count == 2
-    assert another_func.args == (1, 2, '3')
+    assert another_func.args == another_func_args
+    assert func_to_decorate.has_been_called is True
+
+
+def test_applying_decorator_with_args_and_kwargs_on_call_function_var(
+        mock_decorator,
+        mock_wrapper):
+    mock_decorator.return_value = mock_wrapper
+    decorator_args = (1, 2, 'a', "b")
+    decorator_kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
+    another_func_args = (1, 2, '3')
+
+    def another_func(*args):
+        another_func.args = args
+
+    @recursive_decorator(mock_decorator, *decorator_args, **decorator_kwargs)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+        another_func(*another_func_args)
+
+    mock_wrapper.assert_called_once()
+    mock_decorator.assert_called_once_with(*decorator_args, **decorator_kwargs)
+
+    func_to_decorate()
+
+    assert mock_decorator.call_count == 2
+    assert mock_wrapper.call_count == 2
+    assert another_func.args == another_func_args
+    assert func_to_decorate.has_been_called is True
+
+
+def test_apply_decorator_on_call_function_var_with_positional_args(
+        mock_decorator):
+    mock_decorator.side_effect = lambda func: func
+    another_func_args = (7, 4, '3')
+
+    def another_func(*args):
+        another_func.args = args
+
+    @recursive_decorator(mock_decorator)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+        another_func(1, 2, '3', *another_func_args)
+
+    mock_decorator.assert_called_once()
+
+    func_to_decorate()
+
+    assert mock_decorator.call_count == 2
+    assert another_func.args == (1, 2, '3') + another_func_args
+    assert func_to_decorate.has_been_called is True
+
+
+def test_applying_decorator_with_args_on_call_function_var_with_positional_args(
+        mock_decorator,
+        mock_wrapper):
+    mock_decorator.return_value = mock_wrapper
+    decorator_args = (1, 2, 'a', "b")
+    another_func_args = (7, 4, '3')
+
+    def another_func(*args):
+        another_func.args = args
+
+    @recursive_decorator(mock_decorator, *decorator_args)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+        another_func(1, 2, '3', *another_func_args)
+
+    mock_wrapper.assert_called_once()
+    mock_decorator.assert_called_once_with(*decorator_args)
+
+    func_to_decorate()
+
+    assert mock_decorator.call_count == 2
+    assert mock_wrapper.call_count == 2
+    assert another_func.args == (1, 2, '3') + another_func_args
+    assert func_to_decorate.has_been_called is True
+
+
+def test_applying_decorator_with_kwargs_on_call_function_var_with_positional_args(
+        mock_decorator,
+        mock_wrapper):
+    mock_decorator.return_value = mock_wrapper
+    decorator_kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
+    another_func_args = (7, 4, '3')
+
+    def another_func(*args):
+        another_func.args = args
+
+    @recursive_decorator(mock_decorator, **decorator_kwargs)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+        another_func(1, 2, '3', *another_func_args)
+
+    mock_wrapper.assert_called_once()
+    mock_decorator.assert_called_once_with(**decorator_kwargs)
+
+    func_to_decorate()
+
+    assert mock_decorator.call_count == 2
+    assert mock_wrapper.call_count == 2
+    assert another_func.args == (1, 2, '3') + another_func_args
+    assert func_to_decorate.has_been_called is True
+
+
+def test_applying_decorator_with_args_and_kwargs_on_call_function_var_with_positional_args(
+        mock_decorator, mock_wrapper):
+    mock_decorator.return_value = mock_wrapper
+    decorator_args = (1, 2, 'a', "b")
+    decorator_kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
+    another_func_args = (7, 4, '3')
+
+    def another_func(*args):
+        another_func.args = args
+
+    @recursive_decorator(mock_decorator, *decorator_args, **decorator_kwargs)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+        another_func(1, 2, '3', *another_func_args)
+
+    mock_wrapper.assert_called_once()
+    mock_decorator.assert_called_once_with(*decorator_args, **decorator_kwargs)
+
+    func_to_decorate()
+
+    assert mock_decorator.call_count == 2
+    assert mock_wrapper.call_count == 2
+    assert another_func.args == (1, 2, '3') + another_func_args
+    assert func_to_decorate.has_been_called is True
+
+
+def test_apply_decorator_on_call_function_var_with_keyword(
+        mock_decorator):
+    mock_decorator.side_effect = lambda func: func
+    another_func_args = (7, 4, '3')
+
+    def another_func(*args, **kwargs):
+        another_func.kwargs = kwargs
+        another_func.args = args
+
+    @recursive_decorator(mock_decorator)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+        another_func(a=1, b=2, c='3', *another_func_args)
+
+    mock_decorator.assert_called_once()
+
+    func_to_decorate()
+
+    assert mock_decorator.call_count == 2
+    assert another_func.kwargs == {'a': 1, 'b': 2, 'c': '3'}
+    assert another_func.args == another_func_args
+    assert func_to_decorate.has_been_called is True
+
+
+def test_applying_decorator_with_args_on_call_function_var_with_keyword(
+        mock_decorator,
+        mock_wrapper):
+    mock_decorator.return_value = mock_wrapper
+    decorator_args = (1, 2, 'a', "b")
+    another_func_args = (7, 4, '3')
+
+    def another_func(*args, **kwargs):
+        another_func.kwargs = kwargs
+        another_func.args = args
+
+    @recursive_decorator(mock_decorator, *decorator_args)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+        another_func(a=1, b=2, c='3', *another_func_args)
+
+    mock_wrapper.assert_called_once()
+    mock_decorator.assert_called_once_with(*decorator_args)
+
+    func_to_decorate()
+
+    assert mock_decorator.call_count == 2
+    assert mock_wrapper.call_count == 2
+    assert another_func.kwargs == {'a': 1, 'b': 2, 'c': '3'}
+    assert another_func.args == another_func_args
+    assert func_to_decorate.has_been_called is True
+
+
+def test_applying_decorator_with_kwargs_on_call_function_var_with_keyword(
+        mock_decorator,
+        mock_wrapper):
+    mock_decorator.return_value = mock_wrapper
+    decorator_kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
+    another_func_args = (7, 4, '3')
+
+    def another_func(*args, **kwargs):
+        another_func.kwargs = kwargs
+        another_func.args = args
+
+    @recursive_decorator(mock_decorator, **decorator_kwargs)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+        another_func(a=1, b=2, c='3', *another_func_args)
+
+    mock_wrapper.assert_called_once()
+    mock_decorator.assert_called_once_with(**decorator_kwargs)
+
+    func_to_decorate()
+
+    assert mock_decorator.call_count == 2
+    assert mock_wrapper.call_count == 2
+    assert another_func.args == another_func_args
     assert another_func.kwargs == {'a': 1, 'b': 2, 'c': '3'}
     assert func_to_decorate.has_been_called is True
 
 
-def test_applying_decorator_with_args_and_kwargs_on_sub_call_with_args_and_kwargs(
+def test_applying_decorator_with_args_and_kwargs_on_call_function_var_with_keyword(
         mock_decorator, mock_wrapper):
     mock_decorator.return_value = mock_wrapper
     args = (1, 2, 'a', "b")
     kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
+    another_func_args = (7, 4, '3')
 
     def another_func(*args, **kwargs):
-        another_func.args = args
         another_func.kwargs = kwargs
+        another_func.args = args
 
     @recursive_decorator(mock_decorator, *args, **kwargs)
     def func_to_decorate():
         func_to_decorate.has_been_called = True
-        another_func(1, 2, '3', a=1, b=2, c='3')
+        another_func(a=1, b=2, c='3', *another_func_args)
 
     mock_wrapper.assert_called_once()
     mock_decorator.assert_called_once_with(*args, **kwargs)
@@ -400,6 +327,114 @@ def test_applying_decorator_with_args_and_kwargs_on_sub_call_with_args_and_kwarg
 
     assert mock_decorator.call_count == 2
     assert mock_wrapper.call_count == 2
-    assert another_func.args == (1, 2, '3')
+    assert another_func.args == another_func_args
+    assert another_func.kwargs == {'a': 1, 'b': 2, 'c': '3'}
+    assert func_to_decorate.has_been_called is True
+
+
+def test_apply_decorator_on_call_function_var_with_positional_args_and_keyword(
+        mock_decorator):
+    mock_decorator.side_effect = lambda func: func
+    another_func_args = (7, 4, '3')
+
+    def another_func(*args, **kwargs):
+        another_func.kwargs = kwargs
+        another_func.args = args
+
+    @recursive_decorator(mock_decorator)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+        another_func(1, 2, '3', a=1, b=2, c='3', *another_func_args)
+
+    mock_decorator.assert_called_once()
+
+    func_to_decorate()
+
+    assert mock_decorator.call_count == 2
+    assert another_func.args == (1, 2, '3') + another_func_args
+    assert another_func.kwargs == {'a': 1, 'b': 2, 'c': '3'}
+    assert func_to_decorate.has_been_called is True
+
+
+def test_applying_decorator_with_args_on_call_function_var_with_postional_args_and_keyword(
+        mock_decorator,
+        mock_wrapper):
+    mock_decorator.return_value = mock_wrapper
+    decorator_args = (1, 2, 'a', "b")
+    another_func_args = (7, 4, '3')
+
+    def another_func(*args, **kwargs):
+        another_func.kwargs = kwargs
+        another_func.args = args
+
+    @recursive_decorator(mock_decorator, *decorator_args)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+        another_func(1, 2, '3', a=1, b=2, c='3', *another_func_args)
+
+    mock_wrapper.assert_called_once()
+    mock_decorator.assert_called_once_with(*decorator_args)
+
+    func_to_decorate()
+
+    assert mock_decorator.call_count == 2
+    assert mock_wrapper.call_count == 2
+    assert another_func.args == (1, 2, '3') + another_func_args
+    assert another_func.kwargs == {'a': 1, 'b': 2, 'c': '3'}
+    assert func_to_decorate.has_been_called is True
+
+
+def test_applying_decorator_with_kwargs_on_call_function_var_with_postional_args_and_keyword(
+        mock_decorator,
+        mock_wrapper):
+    mock_decorator.return_value = mock_wrapper
+    decorator_kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
+    another_func_args = (7, 4, '3')
+
+    def another_func(*args, **kwargs):
+        another_func.kwargs = kwargs
+        another_func.args = args
+
+    @recursive_decorator(mock_decorator, **decorator_kwargs)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+        another_func(1, 2, '3', a=1, b=2, c='3', *another_func_args)
+
+    mock_wrapper.assert_called_once()
+    mock_decorator.assert_called_once_with(**decorator_kwargs)
+
+    func_to_decorate()
+
+    assert mock_decorator.call_count == 2
+    assert mock_wrapper.call_count == 2
+    assert another_func.args == (1, 2, '3') + another_func_args
+    assert another_func.kwargs == {'a': 1, 'b': 2, 'c': '3'}
+    assert func_to_decorate.has_been_called is True
+
+
+def test_applying_decorator_with_args_and_kwargs_on_call_function_var_with_positional_args_and_keyword(
+        mock_decorator, mock_wrapper):
+    mock_decorator.return_value = mock_wrapper
+    decorator_args = (1, 2, 'a', "b")
+    decorator_kwargs = {'a': 1, 'c': '1', 'b': 2, 'd': '2'}
+    another_func_args = (7, 4, '3')
+
+    def another_func(*args, **kwargs):
+        another_func.kwargs = kwargs
+        another_func.args = args
+
+    @recursive_decorator(mock_decorator, *decorator_args, **decorator_kwargs)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+        another_func(1, 2, '3', a=1, b=2, c='3', *another_func_args)
+
+    mock_wrapper.assert_called_once()
+    mock_decorator.assert_called_once_with(*decorator_args, **decorator_kwargs)
+
+    func_to_decorate()
+
+    assert mock_decorator.call_count == 2
+    assert mock_wrapper.call_count == 2
+    assert another_func.args == (1, 2, '3') + another_func_args
     assert another_func.kwargs == {'a': 1, 'b': 2, 'c': '3'}
     assert func_to_decorate.has_been_called is True
