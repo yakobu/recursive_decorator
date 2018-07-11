@@ -138,8 +138,9 @@ def test_apply_decorator_on_call_function_with_positional_args(mock_decorator):
     assert func_to_decorate.has_been_called is True
 
 
-def test_applying_decorator_with_args_on_call_function_with_positional_args(mock_decorator,
-                                                                 mock_wrapper):
+def test_applying_decorator_with_args_on_call_function_with_positional_args(
+        mock_decorator,
+        mock_wrapper):
     mock_decorator.return_value = mock_wrapper
     args = (1, 2, 'a', "b")
 
@@ -307,7 +308,8 @@ def test_applying_decorator_with_args_and_kwargs_on_call_function_with_keyword(
     assert func_to_decorate.has_been_called is True
 
 
-def test_apply_decorator_on_call_function_with_positional_args_and_keyword(mock_decorator):
+def test_apply_decorator_on_call_function_with_positional_args_and_keyword(
+        mock_decorator):
     mock_decorator.side_effect = lambda func: func
 
     def another_func(*args, **kwargs):

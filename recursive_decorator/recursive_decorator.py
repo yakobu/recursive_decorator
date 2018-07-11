@@ -1,7 +1,7 @@
 """Decorator to apply given decorator recursively on all sub functions."""
 import sys
 from functools import wraps
-from types import CodeType
+from types import CodeType, FunctionType
 
 from .transformer import RecursiveDecoratorCallTransformer
 
@@ -19,6 +19,10 @@ def recursive_decorator(func_decorator, *func_decorator_args,
     @wraps(decorate_func)
     def real_decorator(func_to_decorate):
         """"""
+        if type(func_to_decorate) is not FunctionType or \
+                hasattr(func_to_decorate, "__is_wrapped_with_rec_dec__"):
+            return func_to_decorate
+
         func_module = sys.modules[func_to_decorate.__module__]
 
         setattr(func_module, recursive_decorator.__name__, recursive_decorator)
@@ -57,6 +61,7 @@ def recursive_decorator(func_decorator, *func_decorator_args,
                       ncc.co_cellvars)
 
         new_func.__code__ = zz
+        new_func.__is_wrapped_with_rec_dec__ = True
 
         return decorate_func(new_func)
 

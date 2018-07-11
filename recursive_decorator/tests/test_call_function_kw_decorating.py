@@ -308,6 +308,7 @@ def test_applying_decorator_with_kwargs_on_call_function_kw_with_keyword(
                                        **another_func_kwargs)
     assert func_to_decorate.has_been_called is True
 
+
 def test_applying_decorator_with_args_and_kwargs_on_call_function_kw_with_keyword(
         mock_decorator, mock_wrapper):
     mock_decorator.return_value = mock_wrapper
