@@ -3,7 +3,7 @@ import sys
 from functools import wraps
 from types import CodeType, FunctionType
 
-from .transformer import RecursiveDecoratorCallTransformer
+from transformer import RecursiveDecoratorCallTransformer
 
 
 def recursive_decorator(func_decorator, *func_decorator_args,

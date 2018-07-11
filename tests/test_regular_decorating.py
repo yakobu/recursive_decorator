@@ -2,7 +2,7 @@
 import mock
 import pytest
 
-from recursive_decorator.recursive_decorator import recursive_decorator
+from recursive_decorator import recursive_decorator
 
 
 @pytest.fixture()
