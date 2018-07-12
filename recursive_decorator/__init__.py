@@ -1,2 +1,1 @@
-from .rec_dec import recursive_decorator
-from .transformer import RecursiveDecoratorCallTransformer
+from .recursive_decorator import recursive_decorator
