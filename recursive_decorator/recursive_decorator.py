@@ -9,19 +9,23 @@ from .transformer import RecursiveDecoratorCallTransformer
 def recursive_decorator(func_decorator, *func_decorator_args,
                         **func_decorator_kwargs):
     """Apply given decorator recursively on all sub functions."""
-    # Get real decorator function after args injection if needed.
-    if func_decorator_args or func_decorator_kwargs:
-        decorate_func = func_decorator(*func_decorator_args,
-                                       **func_decorator_kwargs)
-    else:
-        decorate_func = func_decorator
 
-    @wraps(decorate_func)
+    @wraps(func_decorator)
     def real_decorator(func_to_decorate):
         """"""
-        if type(func_to_decorate) is not FunctionType or \
-                hasattr(func_to_decorate, "__is_wrapped_with_rec_dec__"):
+        if type(func_to_decorate) is not FunctionType:
             return func_to_decorate
+
+        if hasattr(func_to_decorate, "__wraped_with_"):
+            if func_decorator.__name__ in func_to_decorate.__wraped_with_:
+                return func_to_decorate
+
+        # Get real decorator function after args injection if needed.
+        if func_decorator_args or func_decorator_kwargs:
+            decorate_func = func_decorator(*func_decorator_args,
+                                           **func_decorator_kwargs)
+        else:
+            decorate_func = func_decorator
 
         func_module = sys.modules[func_to_decorate.__module__]
 
@@ -61,7 +65,13 @@ def recursive_decorator(func_decorator, *func_decorator_args,
                       ncc.co_cellvars)
 
         new_func.__code__ = zz
-        new_func.__is_wrapped_with_rec_dec__ = True
+
+        if hasattr(func_to_decorate, "__wraped_with_"):
+            new_func.__wraped_with_ = func_to_decorate.__wraped_with_[:]
+        else:
+            new_func.__wraped_with_ = []
+
+        new_func.__wraped_with_.append(func_decorator.__name__)
 
         return decorate_func(new_func)
 

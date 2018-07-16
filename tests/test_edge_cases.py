@@ -101,6 +101,7 @@ def test_wrapping_sub_call_which_already_wrapped_with_same_decorator(
 def test_wrapping_sub_call_which_already_wrapped_with_another_decorator(
         mock_decorator1, mock_decorator2):
     mock_decorator1.side_effect = lambda func: func
+    mock_decorator2.side_effect = lambda func: func
 
     @recursive_decorator(mock_decorator1)
     def another_func():
@@ -116,7 +117,55 @@ def test_wrapping_sub_call_which_already_wrapped_with_another_decorator(
 
     func_to_decorate()
 
-    mock_decorator2.assert_called_once()
-    assert mock_decorator1.call_count == 2
+    mock_decorator1.assert_called_once()
+    assert mock_decorator2.call_count == 2
     assert func_to_decorate.has_been_called is True
     assert another_func.has_been_called is True
+
+
+def test_wrapping_function_twice(
+        mock_decorator1, mock_decorator2):
+    mock_decorator1.side_effect = lambda func: func
+    mock_decorator2.side_effect = lambda func: func
+
+    @recursive_decorator(mock_decorator2)
+    @recursive_decorator(mock_decorator1)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+
+    mock_decorator1.assert_called_once()
+    mock_decorator2.assert_called_once()
+
+    func_to_decorate()
+
+    mock_decorator1.assert_called_once()
+    mock_decorator2.assert_called_once()
+    assert func_to_decorate.has_been_called is True
+
+
+def test_wrapping_function_twice_with_sub_call(
+        mock_decorator1, mock_decorator2):
+    mock_decorator1.side_effect = lambda func: func
+    mock_decorator2.side_effect = lambda func: func
+
+    def another_func():
+        another_func.has_been_called = True
+
+    @recursive_decorator(mock_decorator2)
+    @recursive_decorator(mock_decorator1)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+        another_func()
+
+    mock_decorator1.assert_called_once()
+    mock_decorator2.assert_called_once()
+
+    func_to_decorate()
+
+    assert mock_decorator1.call_count == 2
+    assert mock_decorator2.call_count == 2
+    assert func_to_decorate.has_been_called is True
+    assert another_func.has_been_called is True
+
+#TODO: add tests with args
+#TODO: add tests for dist modules

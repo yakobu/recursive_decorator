@@ -9,7 +9,7 @@ from codetransformer.instructions import (CALL_FUNCTION, BUILD_TUPLE, ROT_TWO,
 
 class RecursiveDecoratorCallTransformer(CodeTransformer):
     """Transformer class for every call in function."""
-    CALL_TYPES = CALL_FUNCTION | CALL_FUNCTION_VAR | CALL_FUNCTION_KW |\
+    CALL_TYPES = CALL_FUNCTION | CALL_FUNCTION_VAR | CALL_FUNCTION_KW | \
                  CALL_FUNCTION_VAR_KW
 
     def __init__(self, decorator_name, decorator_args_name,
@@ -19,6 +19,16 @@ class RecursiveDecoratorCallTransformer(CodeTransformer):
         self.decorator_kwargs_name = decorator_kwargs_name
 
     RECURSIVE_DECORATOR = "recursive_decorator"
+
+    @pattern(LOAD_GLOBAL[4], CALL_FUNCTION_VAR_KW, ROT_TWO, CALL_FUNCTION,
+             ROT_TWO, UNPACK_SEQUENCE, BUILD_TUPLE, UNPACK_SEQUENCE,
+             CALL_FUNCTION)
+    def _call(self, g1, *ins):
+        yield g1
+        yield from ins[:-5]
+        if g1.arg == "recursive_decorator":
+            yield from self.wrap_function_with_recursive_decorator()
+        yield from ins[-5:]
 
     @pattern(CALL_TYPES)
     def _call_transformer(self, call):
