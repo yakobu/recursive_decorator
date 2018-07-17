@@ -22,7 +22,7 @@ class RecursiveDecoratorCallTransformer(CodeTransformer):
 
     @pattern(LOAD_GLOBAL[4], CALL_FUNCTION_VAR_KW, ROT_TWO, CALL_FUNCTION,
              ROT_TWO, UNPACK_SEQUENCE, BUILD_TUPLE, UNPACK_SEQUENCE,
-             CALL_FUNCTION)
+             CALL_TYPES)
     def _call(self, g1, *ins):
         yield g1
         yield from ins[:-5]
