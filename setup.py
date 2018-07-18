@@ -9,6 +9,7 @@ setup(
     description="",
     license="MIT",
     author="ronen-y",
+    email="ronenya4321@gmail.com",
     url="https://github.com/ronen-y/recursive_decorator",
     keywords="decorator recursive recursive_decorator recursive-decorator",
     install_requires=["codetransformer"],
