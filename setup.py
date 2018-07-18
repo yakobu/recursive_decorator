@@ -13,12 +13,14 @@ setup(
     url="https://github.com/ronen-y/recursive_decorator",
     keywords="decorator recursive recursive_decorator recursive-decorator",
     install_requires=["codetransformer"],
-    extras_require={
-        "dev": ["flake8", "pylint",
-                "pytest", "pytest-cov",
-                "mock"]
-    },
     packages=["recursive_decorator"],
+    extras_require={
+            'dev': [
+                'flake8==3.3.0',
+                'pytest==2.8.4',
+                'pytest-cov==2.2.1',
+            ],
+        },
     package_data={'': ['*.xls', '*.xsd', '*.json',
                        '*.css', '*.xml', '*.rst']},
     classifiers=[
