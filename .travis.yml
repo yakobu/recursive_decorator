@@ -10,11 +10,11 @@ python:
 install: pip install tox
 script: tox
 
-jobs:
-  include:
-  - stage: test
-    script:
-    - tox
+#jobs:
+#  include:
+#  - stage: test
+#    script:
+#    - tox
 #  - stage: deploy
 #    python: '3.6'
 #    install: skip
