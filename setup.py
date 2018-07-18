@@ -17,9 +17,9 @@ setup(
     extras_require={
         'dev': [
             'mock',
-            'flake8==3.3.0',
+            'flake8',
             'pytest',
-            'pytest-cov==2.2.1',
+            'pytest-cov',
         ],
     },
     package_data={'': ['*.xls', '*.xsd', '*.json',
