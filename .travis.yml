@@ -1,13 +1,28 @@
+stages:
+- test
+#- name: deploy
+#  if: tag IS present
 language: python
 python:
-  - "3.3"
-  - "3.4"
-  - "3.5"
-  - "3.6"
-  - "3.6-dev"  # 3.6 development branch
-  - "3.7-dev"  # 3.7 development branch
-# command to install dependencies
-install:
-  - pip install tox-travis
-# command to run tests
-script: tox
+- '3.4'
+- '3.5'
+- '3.6'
+install: pip install tox
+
+jobs:
+  include:
+  - stage: test
+    script:
+    - tox
+#  - stage: deploy
+#    python: '3.6'
+#    install: skip
+#    script: skip
+#    before_script: npm install && npm run build
+#    deploy:
+#      stage: deploy
+#      skip_cleanup: true
+#      provider: pypi
+#      on:
+#        tags: true
+#      distributions: sdist bdist_wheel
