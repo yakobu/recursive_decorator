@@ -18,7 +18,7 @@ setup(
         'dev': [
             'mock',
             'flake8==3.3.0',
-            'pytest==2.8.4',
+            'pytest',
             'pytest-cov==2.2.1',
         ],
     },
