@@ -15,13 +15,13 @@ setup(
     install_requires=["codetransformer"],
     packages=["recursive_decorator"],
     extras_require={
-            'dev': [
-                'mock',
-                'flake8',
-                'pytest',
-                'pytest-cov',
-            ],
-        },
+        'dev': [
+            'mock',
+            'flake8==3.3.0',
+            'pytest==2.8.4',
+            'pytest-cov==2.2.1',
+        ],
+    },
     package_data={'': ['*.xls', '*.xsd', '*.json',
                        '*.css', '*.xml', '*.rst']},
     classifiers=[
