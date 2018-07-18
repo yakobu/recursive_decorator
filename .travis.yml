@@ -2,10 +2,12 @@ stages:
 - test
 
 language: python
+sudo: false
 python:
 - '3.4'
 - '3.5'
 - '3.6'
 
-install: pip install tox
-script:  tox -e $(echo py$TRAVIS_PYTHON_VERSION | tr -d .)
+install: pip install tox coveralls
+script: tox -e $(echo py$TRAVIS_PYTHON_VERSION | tr -d .)
+after_success: coveralls
