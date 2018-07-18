@@ -1,6 +1,0 @@
-codetransformer
-
-[dev]
-flake8==3.3.0
-pytest
-pytest-cov

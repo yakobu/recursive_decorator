@@ -3,4 +3,5 @@
 __pycache__/
 .pytest_cache/
 .tox/
-
+.coverage
+recursive_decorator.egg-info
