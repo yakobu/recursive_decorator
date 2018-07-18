@@ -16,6 +16,7 @@ setup(
     packages=["recursive_decorator"],
     extras_require={
             'dev': [
+                'mock',
                 'flake8',
                 'pytest',
                 'pytest-cov',
