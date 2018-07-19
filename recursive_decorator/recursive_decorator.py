@@ -3,6 +3,8 @@ import sys
 from functools import wraps
 from types import CodeType, FunctionType
 
+from recursive_decorator.decorator_adapter import DecoratorAdapter
+from recursive_decorator.utils import mount_function_to_module
 from .transformer import RecursiveDecoratorCallTransformer
 
 
@@ -20,17 +22,14 @@ def recursive_decorator(func_decorator, *func_decorator_args,
             if func_decorator.__name__ in func_to_decorate.__wraped_with_:
                 return func_to_decorate
 
-        # Get real decorator function after args injection if needed.
-        if func_decorator_args or func_decorator_kwargs:
-            decorate_func = func_decorator(*func_decorator_args,
-                                           **func_decorator_kwargs)
-        else:
-            decorate_func = func_decorator
+        decorator = DecoratorAdapter(func=func_decorator,
+                                     args=func_decorator_args,
+                                     kwargs=func_decorator_kwargs)
 
         func_module = sys.modules[func_to_decorate.__module__]
 
-        setattr(func_module, recursive_decorator.__name__, recursive_decorator)
-        setattr(func_module, func_decorator.__name__, func_decorator)
+        mount_function_to_module(func_module, recursive_decorator)
+        mount_function_to_module(func_module, func_decorator)
 
         decorator_args_name = \
             func_decorator.__name__ + "_" + recursive_decorator.__name__ + "_args"
@@ -73,6 +72,6 @@ def recursive_decorator(func_decorator, *func_decorator_args,
 
         new_func.__wraped_with_.append(func_decorator.__name__)
 
-        return decorate_func(new_func)
+        return decorator.wrapper(new_func)
 
     return real_decorator

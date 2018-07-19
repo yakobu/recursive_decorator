@@ -12,13 +12,13 @@ class RecursiveDecoratorCallTransformer(CodeTransformer):
     CALL_TYPES = CALL_FUNCTION | CALL_FUNCTION_VAR | CALL_FUNCTION_KW | \
                  CALL_FUNCTION_VAR_KW
 
+    RECURSIVE_DECORATOR = "recursive_decorator"
+
     def __init__(self, decorator_name, decorator_args_name,
                  decorator_kwargs_name):
         self.decorator_name = decorator_name
         self.decorator_args_name = decorator_args_name
         self.decorator_kwargs_name = decorator_kwargs_name
-
-    RECURSIVE_DECORATOR = "recursive_decorator"
 
     @pattern(LOAD_GLOBAL[4], CALL_FUNCTION_VAR_KW, ROT_TWO, CALL_FUNCTION,
              ROT_TWO, UNPACK_SEQUENCE, BUILD_TUPLE, UNPACK_SEQUENCE,

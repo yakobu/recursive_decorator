@@ -6,3 +6,4 @@ __pycache__/
 .coverage
 recursive_decorator.egg-info
 htmlcov
+.cache
