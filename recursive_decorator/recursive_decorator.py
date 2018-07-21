@@ -4,7 +4,8 @@ from functools import wraps
 from recursive_decorator.decorator_adapter import DecoratorAdapter
 from recursive_decorator.utils import mount_to_module, \
     set_func_args_and_kwargs_count, get_func_module, is_function, is_wrapped, \
-    get_function_wrapped_value, set_function_wrapped_value
+    get_function_wrapped_value, set_function_wrapped_value, \
+    set_function_kwargs_default_values
 from .transformer import RecursiveDecoratorCallTransformer
 
 
@@ -40,6 +41,11 @@ def recursive_decorator(func_decorator, *func_decorator_args,
         set_func_args_and_kwargs_count(new_func,
                                        old_code.co_argcount,
                                        old_code.co_kwonlyargcount)
+
+        # TODO: remove when
+        # TODO: https://github.com/llllllllll/codetransformer/issues/69 is fixed
+        set_function_kwargs_default_values(new_func,
+                                           func_to_decorate.__kwdefaults__)
 
         already_wrapped_dec = get_function_wrapped_value(func_to_decorate)[:]
         wrapped_function_list = already_wrapped_dec + [func_decorator.__name__]

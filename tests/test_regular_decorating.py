@@ -38,6 +38,21 @@ def test_applying_decorator(mock_decorator):
     assert func_to_decorate.has_been_called is True
 
 
+def test_applying_decorator_with_default_kwargs(mock_decorator):
+    mock_decorator.side_effect = lambda func: func
+    kwdefaults_value = 3
+
+    @recursive_decorator(mock_decorator)
+    def func_to_decorate(*, k=kwdefaults_value):
+        func_to_decorate.kwdefaults = k
+
+    mock_decorator.assert_called_once()
+
+    func_to_decorate()
+
+    assert func_to_decorate.kwdefaults == kwdefaults_value
+
+
 def test_applying_decorator_on_function_with_args(mock_decorator):
     mock_decorator.side_effect = lambda func: func
     args = (1, "2")

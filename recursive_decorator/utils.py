@@ -43,6 +43,16 @@ def set_func_args_and_kwargs_count(function, args_count, kwargs_count):
                                  code.co_cellvars)
 
 
+def set_function_kwargs_default_values(func, kwargs_default_values):
+    """Set kwargs default values of function.
+
+    Args:
+        func(function): function to set is kwargs defaults.
+        kwargs_default_values(dict): kwargs default values.
+    """
+    func.__kwdefaults__ = kwargs_default_values
+
+
 def get_func_module(func):
     """Return function module.
 
