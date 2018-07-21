@@ -3,6 +3,7 @@ import mock
 import pytest
 
 from recursive_decorator import recursive_decorator
+from recursive_decorator.utils import DECORATOR_LIST_FIELD_NAME
 
 
 @pytest.fixture()
@@ -309,3 +310,28 @@ def test_wrapping_function_twice_with_args_and_kwargs_on_call_function_var_kw_wi
     assert another_func.kwargs == dict({'a': 1, 'b': 2, 'c': '3'},
                                        **another_func_kwargs)
     assert func_to_decorate.has_been_called is True
+
+
+def test_wrapped_value_of_wrapped_function(mock_decorator1, mock_decorator2):
+    mock_decorator1.side_effect = lambda func: func
+    mock_decorator2.side_effect = lambda func: func
+
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+
+    func_after_decoration = \
+        recursive_decorator(mock_decorator1)(func_to_decorate)
+
+    func_after_decorating_list = getattr(func_after_decoration,
+                                         DECORATOR_LIST_FIELD_NAME)
+    assert func_after_decorating_list == ["mock_decorator1"]
+
+    func_after_two_decoration = \
+        recursive_decorator(mock_decorator2)(func_after_decoration)
+
+    func_after_two_decoration_list = getattr(func_after_two_decoration,
+                                             DECORATOR_LIST_FIELD_NAME)
+    assert func_after_two_decoration_list == \
+           ["mock_decorator1", "mock_decorator2"]
+
+    assert func_after_two_decoration_list != func_after_decorating_list
