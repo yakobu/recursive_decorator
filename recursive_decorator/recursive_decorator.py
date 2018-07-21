@@ -1,76 +1,49 @@
 """Decorator to apply given decorator recursively on all sub functions."""
-import sys
 from functools import wraps
-from types import CodeType, FunctionType
 
 from recursive_decorator.decorator_adapter import DecoratorAdapter
-from recursive_decorator.utils import mount_function_to_module
+from recursive_decorator.utils import mount_to_module, \
+    set_func_args_and_kwargs_count, get_func_module, is_function, is_wrapped, \
+    get_function_wrapped_value, set_function_wrapped_value
 from .transformer import RecursiveDecoratorCallTransformer
 
 
 def recursive_decorator(func_decorator, *func_decorator_args,
                         **func_decorator_kwargs):
-    """Apply given decorator recursively on all sub functions."""
+    """Return new decorator that applying given decorator recursively
+        on all sub functions."""
 
     @wraps(func_decorator)
     def real_decorator(func_to_decorate):
-        """"""
-        if type(func_to_decorate) is not FunctionType:
+        """Decorator to apply given decorator recursively on function
+            sub calls."""
+        if (not is_function(func_to_decorate)) or \
+                is_wrapped(func_to_decorate, func_decorator):
             return func_to_decorate
-
-        if hasattr(func_to_decorate, "__wraped_with_"):
-            if func_decorator.__name__ in func_to_decorate.__wraped_with_:
-                return func_to_decorate
 
         decorator = DecoratorAdapter(func=func_decorator,
                                      args=func_decorator_args,
                                      kwargs=func_decorator_kwargs)
 
-        func_module = sys.modules[func_to_decorate.__module__]
+        func_module = get_func_module(func_to_decorate)
 
-        mount_function_to_module(func_module, recursive_decorator)
-        mount_function_to_module(func_module, func_decorator)
+        mount_to_module(module_to_mount=func_module,
+                        object_to_mount=recursive_decorator,
+                        name_in_module=recursive_decorator.__name__)
 
-        decorator_args_name = \
-            func_decorator.__name__ + "_" + recursive_decorator.__name__ + "_args"
-        setattr(func_module, decorator_args_name, func_decorator_args)
+        transformer = RecursiveDecoratorCallTransformer(func_module, decorator)
+        new_func = transformer(func_to_decorate)
 
-        decorator_kwargs_name = \
-            func_decorator.__name__ + "_" + recursive_decorator.__name__ + "_kwargs"
-        setattr(func_module, decorator_kwargs_name, func_decorator_kwargs)
+        # TODO: remove when
+        # TODO: https://github.com/llllllllll/codetransformer/issues/67 is fixed
+        old_code = func_to_decorate.__code__
+        set_func_args_and_kwargs_count(new_func,
+                                       old_code.co_argcount,
+                                       old_code.co_kwonlyargcount)
 
-        call_transformer = \
-            RecursiveDecoratorCallTransformer(func_decorator.__name__,
-                                              decorator_args_name,
-                                              decorator_kwargs_name)
-        new_func = call_transformer(func_to_decorate)
-
-        occ = func_to_decorate.__code__
-        ncc = new_func.__code__
-        zz = CodeType(occ.co_argcount,
-                      occ.co_kwonlyargcount,
-                      ncc.co_nlocals,
-                      ncc.co_stacksize,
-                      ncc.co_flags,
-                      ncc.co_code,
-                      ncc.co_consts,
-                      ncc.co_names,
-                      ncc.co_varnames,
-                      ncc.co_filename,
-                      ncc.co_name,
-                      ncc.co_firstlineno,
-                      ncc.co_lnotab,
-                      ncc.co_freevars,
-                      ncc.co_cellvars)
-
-        new_func.__code__ = zz
-
-        if hasattr(func_to_decorate, "__wraped_with_"):
-            new_func.__wraped_with_ = func_to_decorate.__wraped_with_[:]
-        else:
-            new_func.__wraped_with_ = []
-
-        new_func.__wraped_with_.append(func_decorator.__name__)
+        already_wrapped_dec = get_function_wrapped_value(func_to_decorate)[:]
+        wrapped_function_list = already_wrapped_dec + [func_decorator.__name__]
+        set_function_wrapped_value(new_func, wrapped_function_list)
 
         return decorator.wrapper(new_func)
 
