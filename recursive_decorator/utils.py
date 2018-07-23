@@ -1,5 +1,5 @@
 """Utilities for recursive decorator."""
-from types import CodeType, FunctionType
+from types import CodeType, FunctionType, MethodType
 
 import sys
 
@@ -72,6 +72,18 @@ def is_function(obj):
          bool. true if is function else false.
     """
     return type(obj) is FunctionType
+
+
+def is_method(obj):
+    """Return if object is function.
+
+    Args:
+        obj(object): the tested object.
+
+    Return:
+         bool. true if is method else false.
+    """
+    return type(obj) is MethodType
 
 
 def is_wrapped(func, decorator):
