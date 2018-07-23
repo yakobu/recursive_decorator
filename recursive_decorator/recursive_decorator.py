@@ -49,8 +49,11 @@ def recursive_decorator(func_decorator, *func_decorator_args,
 
         already_wrapped_dec = get_function_wrapped_value(func_to_decorate)[:]
         wrapped_function_list = already_wrapped_dec + [func_decorator.__name__]
-        set_function_wrapped_value(new_func, wrapped_function_list)
 
-        return decorator.wrapper(new_func)
+        value = decorator.wrapper(new_func)
+        if is_function(value):
+            set_function_wrapped_value(value, wrapped_function_list)
+
+        return value
 
     return real_decorator

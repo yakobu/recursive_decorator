@@ -3,6 +3,7 @@ import mock
 import pytest
 
 from recursive_decorator import recursive_decorator
+from recursive_decorator.utils import DECORATOR_LIST_FIELD_NAME
 
 
 @pytest.fixture()
@@ -381,3 +382,18 @@ def test_applying_decorator_with_args_and_kwargs_on_function_with_asterisk_kwarg
     func_to_decorate(**func_kwargs)
 
     assert func_to_decorate.kwargs == func_kwargs
+
+
+def test_wrapped_value_when_decorator_change_function(mock_decorator):
+    def another_func():
+        pass
+
+    mock_decorator.side_effect = lambda func: another_func
+
+    @recursive_decorator(mock_decorator)
+    def func_to_decorate():
+        func_to_decorate.has_been_called = True
+
+    func_after_decorating_list = getattr(func_to_decorate,
+                                         DECORATOR_LIST_FIELD_NAME)
+    assert func_after_decorating_list == ["mock_decorator"]
