@@ -5,7 +5,7 @@ from recursive_decorator.decorator_adapter import DecoratorAdapter
 from recursive_decorator.utils import mount_to_module, \
     set_func_args_and_kwargs_count, get_func_module, is_function, is_wrapped, \
     get_function_wrapped_value, set_function_wrapped_value, \
-    set_function_kwargs_default_values
+    set_function_kwargs_default_values, is_method
 from .transformer import RecursiveDecoratorCallTransformer
 
 
@@ -18,6 +18,13 @@ def recursive_decorator(func_decorator, *func_decorator_args,
     def real_decorator(func_to_decorate):
         """Decorator to apply given decorator recursively on function
             sub calls."""
+        if is_method(func_to_decorate):
+            wrapped_as_function = real_decorator(func_to_decorate.__func__)
+            instance = func_to_decorate.__self__
+
+            return wrapped_as_function.__get__(instance,
+                                               instance.__class__)
+
         if (not is_function(func_to_decorate)) or \
                 is_wrapped(func_to_decorate, func_decorator):
             return func_to_decorate
@@ -53,6 +60,9 @@ def recursive_decorator(func_decorator, *func_decorator_args,
         value = decorator.wrapper(new_func)
         if is_function(value):
             set_function_wrapped_value(value, wrapped_function_list)
+
+        if is_method(value):
+            set_function_wrapped_value(value.__func__, wrapped_function_list)
 
         return value
 
