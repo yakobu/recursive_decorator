@@ -392,8 +392,33 @@ def test_wrapped_value_when_decorator_change_function(mock_decorator):
 
     @recursive_decorator(mock_decorator)
     def func_to_decorate():
-        func_to_decorate.has_been_called = True
+        pass
 
     func_after_decorating_list = getattr(func_to_decorate,
                                          DECORATOR_LIST_FIELD_NAME)
+    assert func_after_decorating_list == ["mock_decorator"]
+
+
+def test_wrapped_value_when_decorator_change_method(mock_decorator):
+    class A:
+        def __init__(self):
+            pass
+
+        def method(self):
+            pass
+
+        def another_method(self):
+            pass
+
+    instance = A()
+    method = instance.method
+    another_method = instance.another_method
+
+    mock_decorator.side_effect = lambda method: another_method
+
+    decorated_method = recursive_decorator(mock_decorator)(method)
+
+    func_after_decorating_list = getattr(decorated_method,
+                                         DECORATOR_LIST_FIELD_NAME)
+
     assert func_after_decorating_list == ["mock_decorator"]

@@ -335,3 +335,34 @@ def test_wrapped_value_of_wrapped_function(mock_decorator1, mock_decorator2):
            ["mock_decorator1", "mock_decorator2"]
 
     assert func_after_two_decoration_list != func_after_decorating_list
+
+
+def test_wrapped_value_of_wrapped_method(mock_decorator1, mock_decorator2):
+    mock_decorator1.side_effect = lambda method: method
+    mock_decorator2.side_effect = lambda method: method
+
+    class A:
+        def __init__(self):
+            pass
+
+        def method(self):
+            method.has_been_called = True
+
+    method = A().method
+
+    method_after_decoration = \
+        recursive_decorator(mock_decorator1)(method)
+
+    method_after_decorating_list = getattr(method_after_decoration,
+                                         DECORATOR_LIST_FIELD_NAME)
+    assert method_after_decorating_list == ["mock_decorator1"]
+
+    method_after_two_decoration = \
+        recursive_decorator(mock_decorator2)(method_after_decoration)
+
+    func_after_two_decoration_list = getattr(method_after_two_decoration,
+                                             DECORATOR_LIST_FIELD_NAME)
+    assert func_after_two_decoration_list == \
+           ["mock_decorator1", "mock_decorator2"]
+
+    assert func_after_two_decoration_list != method_after_decorating_list
