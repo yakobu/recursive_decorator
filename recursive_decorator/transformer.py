@@ -43,8 +43,8 @@ class RecursiveDecoratorCallTransformer(CodeTransformer):
 
         dec_func, args, kwargs = decorator.as_tuple
         # marge function and args to args
-        decorator_as_tuple = ((dec_func, *args), kwargs) if WORDCODE \
-            else (dec_func, args, kwargs)
+        decorator_as_tuple = (tuple([dec_func] + list(args)), kwargs) \
+            if WORDCODE else (dec_func, args, kwargs)
         decorator_as_tuple = tuple(reversed(decorator_as_tuple))
         self.decorator_as_tuple_len = len(decorator_as_tuple)
 
