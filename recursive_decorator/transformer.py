@@ -1,12 +1,21 @@
 """Call transformer module."""
+import sys
+
 from codetransformer import CodeTransformer, pattern
 from codetransformer.instructions import (CALL_FUNCTION, BUILD_TUPLE, ROT_TWO,
                                           LOAD_GLOBAL, UNPACK_SEQUENCE,
-                                          CALL_FUNCTION_VAR_KW,
-                                          CALL_FUNCTION_VAR,
                                           CALL_FUNCTION_KW)
 
 from recursive_decorator.utils import mount_to_module
+
+WORDCODE = sys.version_info >= (3, 6)
+
+if WORDCODE:
+    from codetransformer.instructions import CALL_FUNCTION_EX
+
+else:
+    from codetransformer.instructions import (CALL_FUNCTION_VAR_KW,
+                                              CALL_FUNCTION_VAR)
 
 
 class RecursiveDecoratorCallTransformer(CodeTransformer):
@@ -17,18 +26,34 @@ class RecursiveDecoratorCallTransformer(CodeTransformer):
         decorator(DecoratorAdapter): adapter of decorator to apply on sub calls.
 
     """
-    CALL_TYPES = CALL_FUNCTION | CALL_FUNCTION_VAR | CALL_FUNCTION_KW | \
-                 CALL_FUNCTION_VAR_KW
+    RECURSIVE_DECORATOR_CALL_TYPE = CALL_FUNCTION_EX if WORDCODE \
+        else CALL_FUNCTION_VAR_KW
+
+    CALL_TYPES = CALL_FUNCTION | CALL_FUNCTION_KW
+
+    if WORDCODE:
+        CALL_TYPES = CALL_TYPES | CALL_FUNCTION_EX
+    else:
+        CALL_TYPES = CALL_TYPES | CALL_FUNCTION_VAR | CALL_FUNCTION_VAR_KW
 
     RECURSIVE_DECORATOR = "recursive_decorator"
 
     def __init__(self, function_module, decorator):
         self.decorator_adapter_name = decorator.adapter_name
+
+        dec_func, args, kwargs = decorator.as_tuple
+        # marge function and args to args
+        decorator_as_tuple = ((dec_func, *args), kwargs) if WORDCODE \
+            else (dec_func, args, kwargs)
+        decorator_as_tuple = tuple(reversed(decorator_as_tuple))
+        self.decorator_as_tuple_len = len(decorator_as_tuple)
+
         mount_to_module(module_to_mount=function_module,
-                        object_to_mount=tuple(reversed(decorator.as_tuple)),
+                        object_to_mount=decorator_as_tuple,
                         name_in_module=self.decorator_adapter_name)
 
-    @pattern(LOAD_GLOBAL[2], UNPACK_SEQUENCE, CALL_FUNCTION_VAR_KW, ROT_TWO,
+    @pattern(LOAD_GLOBAL[2], UNPACK_SEQUENCE, RECURSIVE_DECORATOR_CALL_TYPE,
+             ROT_TWO,
              CALL_FUNCTION,
              ROT_TWO, UNPACK_SEQUENCE, BUILD_TUPLE, UNPACK_SEQUENCE,
              CALL_TYPES)
@@ -56,13 +81,21 @@ class RecursiveDecoratorCallTransformer(CodeTransformer):
         Return:
              int. function call number of arguments.
         """
-        call_args_count = call.positional + 2 * call.keyword
-        if type(call) in (CALL_FUNCTION_VAR, CALL_FUNCTION_KW):
-            call_args_count += 1
+        if WORDCODE:
+            if type(call) in (CALL_FUNCTION_KW, CALL_FUNCTION_EX):
+                return call.positional + 1
 
-        elif type(call) is CALL_FUNCTION_VAR_KW:
-            call_args_count += 2
-        return call_args_count
+            return call.positional
+
+        else:
+            call_args_count = call.positional + 2 * call.keyword
+            if type(call) in (CALL_FUNCTION_VAR, CALL_FUNCTION_KW):
+                call_args_count += 1
+
+            elif type(call) is CALL_FUNCTION_VAR_KW:
+                call_args_count += 2
+
+            return call_args_count
 
     @staticmethod
     def switch_function_and_args(args_count):
@@ -104,8 +137,8 @@ class RecursiveDecoratorCallTransformer(CodeTransformer):
         """
         yield LOAD_GLOBAL(self.RECURSIVE_DECORATOR)
         yield LOAD_GLOBAL(self.decorator_adapter_name)
-        yield UNPACK_SEQUENCE(3)
-        yield CALL_FUNCTION_VAR_KW(1)
+        yield UNPACK_SEQUENCE(self.decorator_as_tuple_len)
+        yield self.RECURSIVE_DECORATOR_CALL_TYPE(1)
 
     def wrap_function_with_recursive_decorator(self):
         """Wrap function with recursive_decorator.
