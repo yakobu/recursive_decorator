@@ -46,3 +46,41 @@ Print Stack Calls
     second
     third
 ```
+
+Wrap with Try Except
+----------------------
+
+```python
+   >>> import sys
+   >>> import ipdb
+
+   >>> from recursive_decorator import recursive_decorator
+
+   >>> def wrap_function_with_try_except(f):
+   ...:    def transformed_func(*args, **kwargs):
+   ...:        try:
+   ...:            return f(*args, **kwargs)
+   ...:        except:
+   ...:            ipdb.set_trace(sys._getframe().f_back)
+   ...:    return transformed_func
+
+
+   >>> def throws_exception():
+   ...:    raise Exception
+
+
+   >>> @recursive_decorator(wrap_function_with_try_except)
+   >>> def function():
+   ...:    throws_exception()
+   ...:    print("steal will be called after continue!!!")
+ 
+    >>> function()
+     21     throws_exception()
+---> 22     print("steal will be called!!!")
+     23 
+
+
+   
+   ```
+   
+   
