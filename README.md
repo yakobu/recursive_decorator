@@ -76,7 +76,7 @@ Wrap with Try Except
  
     >>> function()
      21     throws_exception()
----> 22     print("steal will be called!!!")
+---> 22     print("steal will be called after continue!!!")
      23 
 
 
