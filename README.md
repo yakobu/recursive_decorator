@@ -70,17 +70,54 @@ Wrap with Try Except
 
 
    >>> @recursive_decorator(wrap_function_with_try_except)
-   >>> def function():
+   ...:def function():
    ...:    throws_exception()
-   ...:    print("steal will be called after continue!!!")
+   ...:    print("still will be called after continue!!!")
  
     >>> function()
      21     throws_exception()
----> 22     print("steal will be called after continue!!!")
+---> 22     print("still will be called after continue!!!")
      23 
 
 
    
    ```
    
+Calculate Duration
+----------------------
    
+   ```python
+   >>> import time
+
+   >>> from recursive_decorator import recursive_decorator
+
+
+   >>> def run_time_transformer(f):
+   ...:    def transformed_func(*args, **kwargs):
+   ...:        start_time = time.time()
+   ...:        value = f(*args, **kwargs)
+   ...:        end_time = time.time()
+
+   ...:        print("function {} duration is {} minutes"
+   ...:              .format(f.__name__, end_time - start_time))
+
+   ...:        return value
+
+   ...:    return transformed_func
+
+
+   >>> def waiting_function():
+   ...:    time.sleep(5)
+
+
+   >>> @recursive_decorator(run_time_transformer)
+   ...:    def function():
+   ...:        waiting_function()
+   
+   >>> function()
+   function waiting_function duration is 5.00511908531189 minutes
+   function function duration is 5.006134510040283 minutes
+
+   
+   
+   ```
