@@ -18,8 +18,7 @@ and **sub function's call** at runtime, motivated by the need to modify all call
 Examples:
 ---------
 
-Print Stack Calls
-------------------
+## Print Stack Calls
 
 ```python
    >>> from recursive_decorator import recursive_decorator 
@@ -47,8 +46,7 @@ Print Stack Calls
     third
 ```
 
-Wrap with Try Except
-----------------------
+## Wrap with Try Except
 
 ```python
    >>> import sys
@@ -83,8 +81,7 @@ Wrap with Try Except
    
    ```
    
-Calculate Duration
-----------------------
+## Calculate Duration
    
    ```python
    >>> import time
