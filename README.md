@@ -92,7 +92,7 @@ Calculate Duration
    >>> from recursive_decorator import recursive_decorator
 
 
-   >>> def run_time_transformer(f):
+   >>> def duration_transformer(f):
    ...:    def transformed_func(*args, **kwargs):
    ...:        start_time = time.time()
    ...:        value = f(*args, **kwargs)
@@ -110,7 +110,7 @@ Calculate Duration
    ...:    time.sleep(5)
 
 
-   >>> @recursive_decorator(run_time_transformer)
+   >>> @recursive_decorator(duration_transformer)
    ...:    def function():
    ...:        waiting_function()
    
