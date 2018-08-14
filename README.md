@@ -3,7 +3,7 @@ Recursive Decorator
 [![Build Status](https://travis-ci.org/yakobu/recursive_decorator.svg?branch=master)](https://travis-ci.org/yakobu/recursive_decorator)
 [![Coverage Status](https://coveralls.io/repos/github/yakobu/recursive_decorator/badge.svg?branch=master)](https://coveralls.io/github/yakobu/recursive_decorator?branch=master)
 
-Decorator to transform function calls alone the stack.
+Decorator to apply given decorator recursively on given function, and on all call function within the decorated function.
 
 What is ``recursive_decorator``?
 ----------------------------
