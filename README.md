@@ -3,17 +3,16 @@ Recursive Decorator
 [![Build Status](https://travis-ci.org/yakobu/recursive_decorator.svg?branch=master)](https://travis-ci.org/yakobu/recursive_decorator)
 [![Coverage Status](https://coveralls.io/repos/github/yakobu/recursive_decorator/badge.svg?branch=master)](https://coveralls.io/github/yakobu/recursive_decorator?branch=master)
 
-Decorator to apply given decorator recursively on given function, and on all call function within the decorated function.
+Decorator to apply a given decorator recursively on all function, inside a function/method, recursively.
 
 What is ``recursive_decorator``?
 ----------------------------
 
-``recursive_decorator`` is a decorator that allows us to transform function 
-and **sub function's call** at runtime, motivated by the need to modify all calls along the stack.
+``recursive_decorator`` is a decorator that allows us to **decorate/transform** function at runtime, motivated by the need to add/transform logics, to known\unknown functions, along the stack calls.
 
-* Functions will not be replaced, new instances will be returned.
-* Function cannot be wrapped more then once with same transformer.
-* Methods can be wrapped as well. 
+#### Notes:
+* Functions/Methods will not be replaced, new instances will be returned.
+* Function/Methods cannot be wrapped more then once with same transformer/decorator.
 
 Examples:
 ---------
@@ -46,7 +45,7 @@ Examples:
     third
 ```
 
-### Wrap with Try Except
+### Stop on Execption
 
 ```python
    >>> import sys
