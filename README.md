@@ -8,13 +8,78 @@ Decorator to apply a given decorator recursively on all function, inside a funct
 What is ``recursive_decorator``?
 ----------------------------
 
-``recursive_decorator`` is a decorator that allows us to **decorate/transform** function at runtime, motivated by the need to add/transform logics, to known\unknown functions, along the stack calls.
+``recursive_decorator`` is a decorator that allows us to **decorate/trasform all functions along the stack call** at runtime, motivated by the need to add/transform logics, to known\unknown functions, along the stack calls.
 
 #### Notes:
 * Functions/Methods will not be replaced, new instances will be returned.
 * Function/Methods cannot be wrapped more then once with same transformer/decorator.
 
-Examples:
+
+Using
+---------
+import recursive_decorator
+
+```python
+from recursive_decorator import recursive_decorator
+```
+define your decorator to apply recursively on all functions.
+
+```python
+
+def decorator(f):
+   def wrapper(*args, **kwargs):
+      print(f.__name__)
+      return f(*args, **kwargs)
+```
+
+Now using your decorator on function without using recursive_decorator will lead to the following output
+
+```python
+
+   >>> @decorator
+   ...:def main_function():
+   ...:   sub_function()
+
+   >>> main_function()
+   main_function
+  
+```
+
+Using recursive_decorator leads to
+
+```python
+
+   >>> @recursive_decorator(decorator)
+   ...:def main_function():
+   ...:   sub_function()
+
+   >>> main_function()
+   main_function
+   sub_function
+
+```
+
+Furthermore, if sub_function has function calls in is definition, they will decorated to
+
+```python
+
+   >>> def sub_function():
+   ...:    another_function()
+
+   >>> @recursive_decorator(decorator)
+   ...:def main_function():
+   ...:   sub_function()
+
+   >>> main_function()
+   main_function
+   sub_function
+   another_function
+```
+
+and so on...
+
+
+Examples
 ---------
 
 ### Print Stack Calls
@@ -107,8 +172,8 @@ Examples:
 
 
    >>> @recursive_decorator(duration_transformer)
-   ...:    def function():
-   ...:        waiting_function()
+   ...:def function():
+   ...:    waiting_function()
    
    >>> function()
    function waiting_function duration is 5.00511908531189 minutes
