@@ -1,15 +1,16 @@
 """Setup file for handling packaging and distribution."""
 from setuptools import setup
 
-__version__ = "0.0.0"
+__version__ = "0.0.1"
 
 setup(
     name="recursive_decorator",
     version=__version__,
-    description="",
+    long_description=open("README.rst").read(),
+    description="Decorator to apply given decorator recursively on functions",
     license="MIT",
-    author="ronen-y",
-    email="ronenya4321@gmail.com",
+    author="yakobu",
+    author_email="ronenya4321@gmail.com",
     url="https://github.com/ronen-y/recursive_decorator",
     keywords="decorator recursive recursive_decorator recursive-decorator",
     install_requires=["codetransformer", "cached-property"],

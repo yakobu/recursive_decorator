@@ -1,12 +1,12 @@
 Recursive Decorator
-==========================
+===================
 [![Build Status](https://travis-ci.org/yakobu/recursive_decorator.svg?branch=master)](https://travis-ci.org/yakobu/recursive_decorator)
 [![Coverage Status](https://coveralls.io/repos/github/yakobu/recursive_decorator/badge.svg?branch=master)](https://coveralls.io/github/yakobu/recursive_decorator?branch=master)
 
 Decorator to apply a given decorator recursively on all function, inside a function/method, recursively.
 
 What is ``recursive_decorator``?
-----------------------------
+--------------------------------
 
 ``recursive_decorator`` is a decorator that allows us to **decorate/trasform all functions along the stack call** at runtime, motivated by the need to add/transform logics, to known\unknown functions, along the stack calls.
 
@@ -16,7 +16,7 @@ What is ``recursive_decorator``?
 
 
 Using
----------
+-----
 import recursive_decorator
 
 ```python
