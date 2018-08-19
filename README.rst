@@ -1,7 +1,10 @@
 Recursive Decorator
 ===================
-[![Build Status](https://travis-ci.org/yakobu/recursive_decorator.svg?branch=master)](https://travis-ci.org/yakobu/recursive_decorator)
-[![Coverage Status](https://coveralls.io/repos/github/yakobu/recursive_decorator/badge.svg?branch=master)](https://coveralls.io/github/yakobu/recursive_decorator?branch=master)
+.. image:: https://travis-ci.org/yakobu/recursive_decorator.svg?branch=master
+    :target: https://travis-ci.org/yakobu/recursive_decorator
+.. image:: https://coveralls.io/repos/github/yakobu/recursive_decorator/badge.svg?branch=master
+    :target: https://coveralls.io/github/yakobu/recursive_decorator?branch=master
+
 
 Decorator to apply a given decorator recursively on all function, inside a function/method, recursively.
 
@@ -15,26 +18,30 @@ What is ``recursive_decorator``?
 * Function/Methods cannot be wrapped more then once with same transformer/decorator.
 
 
-Using
+Usage
 -----
+install recursive_decorator package
+.. code-block:: python
+   pip install recursive_decorator
+
 import recursive_decorator
 
-```python
-from recursive_decorator import recursive_decorator
-```
+.. code-block:: python
+   from recursive_decorator import recursive_decorator
+
 define your decorator to apply recursively on all functions.
 
-```python
+.. code-block:: python
+   def decorator(f):
+      def wrapper(*args, **kwargs):
+         print(f.__name__)
+         return f(*args, **kwargs)
+      retrun wrapper
 
-def decorator(f):
-   def wrapper(*args, **kwargs):
-      print(f.__name__)
-      return f(*args, **kwargs)
-```
 
 Now using your decorator on function without using recursive_decorator will lead to the following output
 
-```python
+.. code-block:: python
 
    >>> @decorator
    ...:def main_function():
@@ -42,12 +49,11 @@ Now using your decorator on function without using recursive_decorator will lead
 
    >>> main_function()
    main_function
-  
-```
+
 
 Using recursive_decorator leads to
 
-```python
+.. code-block:: python
 
    >>> @recursive_decorator(decorator)
    ...:def main_function():
@@ -57,11 +63,10 @@ Using recursive_decorator leads to
    main_function
    sub_function
 
-```
 
 Furthermore, if sub_function has function calls in is definition, they will decorated to
 
-```python
+.. code-block:: python
 
    >>> def sub_function():
    ...:    another_function()
@@ -74,45 +79,17 @@ Furthermore, if sub_function has function calls in is definition, they will deco
    main_function
    sub_function
    another_function
-```
+
 
 and so on...
 
 
 Examples
----------
-
-### Print Stack Calls
-
-```python
-   >>> from recursive_decorator import recursive_decorator 
-   
-   >>> def print_function_name_transformer(f):
-   ...:    def transformed_func(*args, **kwargs):
-   ...:        print(f.__name__)
-   ...:        return f(*args, **kwargs)
-   ...:    return transformed_func
-   
-   
-   >>> def third():
-   ...:    pass
-
-   >>> def second():
-   ...:    third()
-
-   >>>  @recursive_decorator(print_function_name_transformer)
-   ...: def first():
-   ...:     second()
-   
-   >>> first()
-    first
-    second
-    third
-```
+--------
 
 ### Stop on Execption
 
-```python
+.. code-block:: python
    >>> import sys
    >>> import ipdb
 
@@ -135,19 +112,16 @@ Examples
    ...:def function():
    ...:    throws_exception()
    ...:    print("still will be called after continue!!!")
- 
+
     >>> function()
      21     throws_exception()
 ---> 22     print("still will be called after continue!!!")
-     23 
+     23
 
 
-   
-   ```
-   
 ### Calculate Duration
-   
-   ```python
+
+.. code-block:: python
    >>> import time
 
    >>> from recursive_decorator import recursive_decorator
@@ -174,11 +148,8 @@ Examples
    >>> @recursive_decorator(duration_transformer)
    ...:def function():
    ...:    waiting_function()
-   
+
    >>> function()
    function waiting_function duration is 5.00511908531189 minutes
    function function duration is 5.006134510040283 minutes
 
-   
-   
-   ```
