@@ -7,7 +7,7 @@ setup(
     name="recursive_decorator",
     version=__version__,
     long_description_content_type="text/markdown",
-    long_description=open("README.rst").read(),
+    long_description=open("README.md").read(),
     description="Decorator to apply given decorator recursively on functions",
     license="MIT",
     author="yakobu",
