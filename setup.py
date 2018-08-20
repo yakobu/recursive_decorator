@@ -6,6 +6,7 @@ __version__ = "1.0.0"
 setup(
     name="recursive_decorator",
     version=__version__,
+    long_description_content_type="text/markdown",
     long_description=open("README.rst").read(),
     description="Decorator to apply given decorator recursively on functions",
     license="MIT",
