@@ -57,7 +57,7 @@ def test_wrapping_sub_call_which_already_wrapped_with_same_decorator(
         func_to_decorate.has_been_called = True
         another_func()
 
-        assert mock_decorator1.call_count == 2
+    assert mock_decorator1.call_count == 2
 
     func_to_decorate()
 
