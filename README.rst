@@ -158,6 +158,4 @@ Calculate Duration
    ...:    waiting_function()
 
    >>> function()
-   function waiting_function duration is 5.00511908531189 minutes
-   function function duration is 5.006134510040283 minutes
 
