@@ -124,7 +124,7 @@ We can wrap all functions with try except...
 
        >>> function()
           21     throws_exception()
-    ----> 22     print("still will be called after continue!!!")
+     ---> 22     print("still will be called after continue!!!")
           23
 
 If function will throw an error... ipdb session will start.
