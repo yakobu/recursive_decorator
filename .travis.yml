@@ -17,7 +17,6 @@ jobs:
   - stage: deploy
     install: skip
     script: skip
-    after_success: skip
     deploy:
       stage: deploy
       provider: pypi
