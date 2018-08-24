@@ -32,8 +32,8 @@ install recursive_decorator package
 import recursive_decorator
 
 .. code-block:: python
-    from recursive_decorator import recursive_decorator
 
+    from recursive_decorator import recursive_decorator
 
 define your decorator to apply recursively on all functions.
 
