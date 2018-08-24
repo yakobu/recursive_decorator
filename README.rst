@@ -134,6 +134,7 @@ Calculate Duration
 ++++++++++++++++++
 
 .. code-block:: python
+
    >>> import time
 
    >>> from recursive_decorator import recursive_decorator
