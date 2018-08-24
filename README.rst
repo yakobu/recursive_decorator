@@ -19,16 +19,15 @@ Notes:
 * Functions/Methods will not be replaced, new instances will be returned.
 * Function/Methods cannot be wrapped more then once with same transformer/decorator.
 
-
-Usage
------
-install recursive_decorator package
-
+Installing
+----------
 .. code-block:: console
 
     $ pip install recursive_decorator
 
 
+Usage
+-----
 import recursive_decorator
 
 .. code-block:: python
@@ -130,8 +129,10 @@ We can wrap all functions with try except...
 If function will throw an error... ipdb session will start.
 
 
-Calculate Duration
-++++++++++++++++++
+Profiler
+++++++++
+
+We can set time profiler for all running functions.
 
 .. code-block:: python
 
