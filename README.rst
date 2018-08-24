@@ -14,7 +14,8 @@ What is ``recursive_decorator``?
 
 ``recursive_decorator`` is a decorator that allows us to **decorate/trasform all functions along the stack call** at runtime, motivated by the need to add/transform logics, to known\unknown functions, along the stack calls.
 
-#### Notes:
+Notes:
+++++++
 * Functions/Methods will not be replaced, new instances will be returned.
 * Function/Methods cannot be wrapped more then once with same transformer/decorator.
 
@@ -94,6 +95,8 @@ Examples
 Stop on Execption
 +++++++++++++++++
 
+We can wrap all functions with try except...
+
 .. code-block:: pycon
        >>> import sys
        >>> import ipdb
@@ -122,6 +125,8 @@ Stop on Execption
           21     throws_exception()
     ----> 22     print("still will be called after continue!!!")
           23
+
+If function will throw an error... ipdb session will start.
 
 
 Calculate Duration
