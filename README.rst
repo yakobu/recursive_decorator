@@ -23,7 +23,9 @@ Notes:
 Usage
 -----
 install recursive_decorator package
+
 .. code-block:: console
+
     $ pip install recursive_decorator
 
 
