@@ -46,7 +46,7 @@ define your decorator to apply recursively on all functions.
    ...:    return wrapper
 
 
-Now using your decorator on function without using recursive_decorator will lead to the following output
+Now using your decorator on function without using recursive_decorator will leads to the following output
 
 .. code-block:: python
 
@@ -71,7 +71,7 @@ Using recursive_decorator leads to
    sub_function
 
 
-Furthermore, if sub_function has function calls in is definition, they will decorated to
+Furthermore, if sub_function has function calls, they will decorated to
 
 .. code-block:: python
 
@@ -100,11 +100,10 @@ Stop on Execption
 We can wrap all functions with try except...
 
 .. code-block:: python
+
    >>> import sys
    >>> import ipdb
-
    >>> from recursive_decorator import recursive_decorator
-
    >>> def wrap_function_with_try_except(f):
    ...:    def transformed_func(*args, **kwargs):
    ...:        try:
@@ -112,7 +111,6 @@ We can wrap all functions with try except...
    ...:        except:
    ...:            ipdb.set_trace(sys._getframe().f_back)
    ...:    return transformed_func
-
 
    >>> def throws_exception():
    ...:    raise Exception
