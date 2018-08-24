@@ -98,33 +98,33 @@ Stop on Execption
 We can wrap all functions with try except...
 
 .. code-block:: python
-       >>> import sys
-       >>> import ipdb
+   >>> import sys
+   >>> import ipdb
 
-       >>> from recursive_decorator import recursive_decorator
+   >>> from recursive_decorator import recursive_decorator
 
-       >>> def wrap_function_with_try_except(f):
-       ...:    def transformed_func(*args, **kwargs):
-       ...:        try:
-       ...:            return f(*args, **kwargs)
-       ...:        except:
-       ...:            ipdb.set_trace(sys._getframe().f_back)
-       ...:    return transformed_func
-
-
-       >>> def throws_exception():
-       ...:    raise Exception
+   >>> def wrap_function_with_try_except(f):
+   ...:    def transformed_func(*args, **kwargs):
+   ...:        try:
+   ...:            return f(*args, **kwargs)
+   ...:        except:
+   ...:            ipdb.set_trace(sys._getframe().f_back)
+   ...:    return transformed_func
 
 
-       >>> @recursive_decorator(wrap_function_with_try_except)
-       ...:def function():
-       ...:    throws_exception()
-       ...:    print("still will be called after continue!!!")
+   >>> def throws_exception():
+   ...:    raise Exception
 
-       >>> function()
-          21     throws_exception()
-    ----> 22     print("still will be called after continue!!!")
-          23
+
+   >>> @recursive_decorator(wrap_function_with_try_except)
+   ...:def function():
+   ...:    throws_exception()
+   ...:    print("still will be called after continue!!!")
+
+   >>> function()
+      21     throws_exception()
+----> 22     print("still will be called after continue!!!")
+      23
 
 If function will throw an error... ipdb session will start.
 
