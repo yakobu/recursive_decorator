@@ -97,7 +97,7 @@ Stop on Execption
 
 We can wrap all functions with try except...
 
-.. code-block:: pycon
+.. code-block:: python
        >>> import sys
        >>> import ipdb
 
