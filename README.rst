@@ -23,15 +23,14 @@ Notes:
 Usage
 -----
 install recursive_decorator package
-
-.. code-block:: python
-   pip install recursive_decorator
+.. code-block:: console
+    $ pip install recursive_decorator
 
 
 import recursive_decorator
 
 .. code-block:: python
-   from recursive_decorator import recursive_decorator
+    from recursive_decorator import recursive_decorator
 
 
 define your decorator to apply recursively on all functions.
@@ -158,4 +157,6 @@ Calculate Duration
    ...:    waiting_function()
 
    >>> function()
+   function waiting_function duration is 5.00511908531189 minutes
+   function function duration is 5.006134510040283 minutes
 
