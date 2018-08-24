@@ -1,7 +1,7 @@
 """Setup file for handling packaging and distribution."""
 from setuptools import setup
 
-__version__ = "1.0.1"
+__version__ = "1.0.4"
 
 setup(
     name="recursive_decorator",
