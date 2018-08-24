@@ -38,6 +38,7 @@ import recursive_decorator
 define your decorator to apply recursively on all functions.
 
 .. code-block:: python
+
    >>> def decorator(f):
    ...:    def wrapper(*args, **kwargs):
    ...:        print(f.__name__)
