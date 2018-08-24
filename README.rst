@@ -1,7 +1,10 @@
 Recursive Decorator
 ===================
-[![Build Status](https://travis-ci.org/yakobu/recursive_decorator.svg?branch=master)](https://travis-ci.org/yakobu/recursive_decorator)
-[![Coverage Status](https://coveralls.io/repos/github/yakobu/recursive_decorator/badge.svg?branch=master)](https://coveralls.io/github/yakobu/recursive_decorator?branch=master)
+.. image:: https://travis-ci.org/yakobu/recursive_decorator.svg?branch=master
+    :target: https://travis-ci.org/yakobu/recursive_decorator
+.. image:: https://coveralls.io/repos/github/yakobu/recursive_decorator/badge.svg?branch=master
+    :target: https://coveralls.io/github/yakobu/recursive_decorator?branch=master
+
 
 
 Decorator to apply a given decorator recursively on all function, inside a function/method, recursively.
@@ -20,29 +23,29 @@ Usage
 -----
 install recursive_decorator package
 
-```python
+.. code-block:: python
    pip install recursive_decorator
-```
+
 
 import recursive_decorator
 
-```python
+.. code-block:: python
    from recursive_decorator import recursive_decorator
-```
+
 
 define your decorator to apply recursively on all functions.
 
-```python
-   def decorator(f):
-      def wrapper(*args, **kwargs):
-         print(f.__name__)
-         return f(*args, **kwargs)
-      retrun wrapper
-```
+.. code-block:: python
+   >>> def decorator(f):
+   ...:    def wrapper(*args, **kwargs):
+   ...:        print(f.__name__)
+   ...:        return f(*args, **kwargs)
+   ...:    return wrapper
+
 
 Now using your decorator on function without using recursive_decorator will lead to the following output
 
-```python
+.. code-block:: python
 
    >>> @decorator
    ...:def main_function():
@@ -50,11 +53,11 @@ Now using your decorator on function without using recursive_decorator will lead
 
    >>> main_function()
    main_function
-```
+
 
 Using recursive_decorator leads to
 
-```python
+.. code-block:: python
 
    >>> @recursive_decorator(decorator)
    ...:def main_function():
@@ -63,11 +66,11 @@ Using recursive_decorator leads to
    >>> main_function()
    main_function
    sub_function
-```
+
 
 Furthermore, if sub_function has function calls in is definition, they will decorated to
 
-```python
+.. code-block:: python
 
    >>> def sub_function():
    ...:    another_function()
@@ -80,7 +83,7 @@ Furthermore, if sub_function has function calls in is definition, they will deco
    main_function
    sub_function
    another_function
-```
+
 
 and so on...
 
@@ -90,39 +93,39 @@ Examples
 
 ### Stop on Execption
 
-```python
-   >>> import sys
-   >>> import ipdb
+.. code-block:: pycon
+       >>> import sys
+       >>> import ipdb
 
-   >>> from recursive_decorator import recursive_decorator
+       >>> from recursive_decorator import recursive_decorator
 
-   >>> def wrap_function_with_try_except(f):
-   ...:    def transformed_func(*args, **kwargs):
-   ...:        try:
-   ...:            return f(*args, **kwargs)
-   ...:        except:
-   ...:            ipdb.set_trace(sys._getframe().f_back)
-   ...:    return transformed_func
-
-
-   >>> def throws_exception():
-   ...:    raise Exception
+       >>> def wrap_function_with_try_except(f):
+       ...:    def transformed_func(*args, **kwargs):
+       ...:        try:
+       ...:            return f(*args, **kwargs)
+       ...:        except:
+       ...:            ipdb.set_trace(sys._getframe().f_back)
+       ...:    return transformed_func
 
 
-   >>> @recursive_decorator(wrap_function_with_try_except)
-   ...:def function():
-   ...:    throws_exception()
-   ...:    print("still will be called after continue!!!")
+       >>> def throws_exception():
+       ...:    raise Exception
 
-    >>> function()
-     21     throws_exception()
----> 22     print("still will be called after continue!!!")
-     23
-```
+
+       >>> @recursive_decorator(wrap_function_with_try_except)
+       ...:def function():
+       ...:    throws_exception()
+       ...:    print("still will be called after continue!!!")
+
+       >>> function()
+          21     throws_exception()
+    ----> 22     print("still will be called after continue!!!")
+          23
+
 
 ### Calculate Duration
 
-```python
+.. code-block:: python
    >>> import time
 
    >>> from recursive_decorator import recursive_decorator
@@ -133,12 +136,9 @@ Examples
    ...:        start_time = time.time()
    ...:        value = f(*args, **kwargs)
    ...:        end_time = time.time()
-
    ...:        print("function {} duration is {} minutes"
    ...:              .format(f.__name__, end_time - start_time))
-
    ...:        return value
-
    ...:    return transformed_func
 
 
@@ -153,4 +153,4 @@ Examples
    >>> function()
    function waiting_function duration is 5.00511908531189 minutes
    function function duration is 5.006134510040283 minutes
-```
+

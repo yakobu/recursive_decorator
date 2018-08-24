@@ -7,9 +7,7 @@ python:
 - '3.4'
 - '3.5'
 - '3.6'
-matrix:
-  allow_failures:
-  - python: '3.6'
+
 install: pip install tox coveralls
 script: tox -e $(echo py$TRAVIS_PYTHON_VERSION | tr -d .)
 after_success: coveralls
@@ -19,6 +17,7 @@ jobs:
   - stage: deploy
     install: skip
     script: skip
+    after_success: skip
     deploy:
       stage: deploy
       provider: pypi
