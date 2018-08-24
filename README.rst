@@ -20,7 +20,7 @@ Notes:
 * Function/Methods cannot be wrapped more then once with same transformer/decorator.
 
 Installing
-----------
+==========
 .. code-block:: console
 
     $ pip install recursive_decorator
