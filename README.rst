@@ -91,7 +91,8 @@ and so on...
 Examples
 --------
 
-### Stop on Execption
+Stop on Execption
++++++++++++++++++
 
 .. code-block:: pycon
        >>> import sys
@@ -123,7 +124,8 @@ Examples
           23
 
 
-### Calculate Duration
+Calculate Duration
+++++++++++++++++++
 
 .. code-block:: python
    >>> import time
