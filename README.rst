@@ -1,9 +1,9 @@
 Recursive Decorator
 ===================
 
-.. image:: https://img.shields.io/pypi/pyversions/Django.svg
-    :alt: PyPI - Python Version
-    :target: https://pypi.org/project/recursive-decorator/
+.. image:: https://img.shields.io/github/license/yakobu/recursive_decorator.svg
+    :alt: GitHub license
+    :target: https://github.com/yakobu/recursive_decorator
 .. image:: https://badge.fury.io/py/recursive-decorator.svg
     :target: https://badge.fury.io/py/recursive-decorator
 .. image:: https://travis-ci.org/yakobu/recursive_decorator.svg?branch=master
