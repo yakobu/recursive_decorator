@@ -1,5 +1,11 @@
 Recursive Decorator
 ===================
+
+.. image:: https://img.shields.io/pypi/pyversions/Django.svg
+    :alt: PyPI - Python Version
+    :target: https://pypi.org/project/recursive-decorator/
+.. image:: https://badge.fury.io/py/recursive-decorator.svg
+    :target: https://badge.fury.io/py/recursive-decorator
 .. image:: https://travis-ci.org/yakobu/recursive_decorator.svg?branch=master
     :target: https://travis-ci.org/yakobu/recursive_decorator
 .. image:: https://coveralls.io/repos/github/yakobu/recursive_decorator/badge.svg?branch=master
@@ -120,11 +126,11 @@ We can wrap all functions with try except...
        >>> @recursive_decorator(wrap_function_with_try_except)
        ...:def function():
        ...:    throws_exception()
-       ...:    print("still will be called after continue!!!")
+       ...:    pass
 
        >>> function()
           21     throws_exception()
-     ---> 22     print("still will be called after continue!!!")
+     ---> 22     pass
           23
 
 If function will throw an error... ipdb session will start.
